@@ -18,6 +18,7 @@ public class GiniJava {
         yearGini objGini = new yearGini();
         listCountries listCountries = new listCountries();
         listLATAM listLATAM = new listLATAM();
+        apiConnectionPerRegion perRegion = new apiConnectionPerRegion();
         ObjectMapper objectMapper = new ObjectMapper();
         System.out.println("Ingrese la opcion: ");
         int opcion = Integer.parseInt(sc.nextLine());
@@ -32,11 +33,13 @@ public class GiniJava {
                     String official = jsonCountry.get(0).get("name").get("official").asText();
                     String capital = jsonCountry.get(0).get("capital").get(0).asText();
                     String population = jsonCountry.get(0).get("population").asText();
+                    JsonNode p = jsonCountry.get(0).get("subregion");
                     int currentYear = LocalDate.now().getYear();
                     List<Map<String, String>> yearGiniList = objGini.yearGiniList(currentYear, jsonCountry);
                     System.out.println(official);
                     System.out.println(capital);
                     System.out.println(population);
+                    System.out.println(p);
                     if (!yearGiniList.isEmpty()) {
                         String year = yearGiniList.get(0).get("year");
                         String gini = yearGiniList.get(0).get("gini");
@@ -51,23 +54,24 @@ public class GiniJava {
                     JsonNode jsonCountries = objectMapper.readTree(countries);
                     List<String> Countries = listCountries.GetCountriesList(jsonCountries);
                     System.out.println(Countries);
-                    int cantidadPaises = Countries.size();
-                    System.out.println(cantidadPaises);
+                    List<String> subRegions = listCountries.GetSubRegions(jsonCountries);
+                    System.out.println(subRegions);
                     break;
                 case 3:
                     //lista paises latam
-                    String countriesSur = listLATAM.GetCountriesSurAme();
-                    String countriesCen = listLATAM.GetCountriesCenAme();
-                    String countriesNor = listLATAM.GetCountriesNorAme();
-                    JsonNode jsonCountriesLATAMSur = objectMapper.readTree(countriesSur);
-                    JsonNode jsonCountriesLATAMCen = objectMapper.readTree(countriesCen);
-                    JsonNode jsonCountriesLATAMNor = objectMapper.readTree(countriesNor);
-                    List<String> CountriesSurAme = listCountries.GetCountriesList(jsonCountriesLATAMSur);
-                    System.out.println(CountriesSurAme);
-
-                    
+                    String countriesLATAM = listLATAM.GetCountriesLATAM();
+                    JsonNode jsonCountriesLATAMSur = objectMapper.readTree(countriesLATAM);
+                    List<String> latinAmericanCountries = listLATAM.LATAM(jsonCountriesLATAMSur);
+                    System.out.println(latinAmericanCountries);
                     break;
-
+                case 4:
+                    //lista paises por region
+                    System.out.println("introduzca la sub region que le gusta: ");
+                    String SubRegion = sc.nextLine();
+                    String countriesSub = perRegion.GetCountries(SubRegion);
+                    JsonNode jsonSubCountries = objectMapper.readTree(countriesSub);
+                    List<String> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
+                    System.out.println(subregionCountries);
                 }  
             } catch (IOException e) {
             e.printStackTrace();

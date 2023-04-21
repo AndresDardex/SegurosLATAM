@@ -40,20 +40,36 @@ public class listCountries {
     public List<String> GetCountriesList(JsonNode jsonCountries){
         List<String> CountriesSURAME = new ArrayList<>();
         if (jsonCountries != null) {
-    for (int quantity = 0; quantity < 195; quantity++) {
-        JsonNode countryNode = jsonCountries.get(quantity);
-        if (countryNode != null) {
-            JsonNode nameNode = countryNode.get("name");
-            if (nameNode != null) {
-                JsonNode commonNode = nameNode.get("common");
-                if (commonNode != null) {
-                    String country = commonNode.asText();
-                    CountriesSURAME.add(country);
+            for (int quantity = 0; quantity < 195; quantity++) {
+                JsonNode countryNode = jsonCountries.get(quantity);
+                if (countryNode != null) {
+                    JsonNode nameNode = countryNode.get("name");
+                    if (nameNode != null) {
+                        JsonNode commonNode = nameNode.get("common");
+                        if (commonNode != null) {
+                            String country = commonNode.asText();
+                            CountriesSURAME.add(country);
                 }
             }
         }
     }
 }
         return CountriesSURAME;
+    }
+    public List<String> GetSubRegions(JsonNode jsonCountries){
+        List<String> subRegions = new ArrayList<>();
+        if(jsonCountries != null){
+            for(int quantity = 0; quantity < 9;quantity++){
+                JsonNode SubRegionNode = jsonCountries.get(quantity);
+                if (SubRegionNode != null){
+                    JsonNode subRegion = SubRegionNode.get("subregion");
+                    String eachSubRegion = subRegion.asText();
+                    if(!eachSubRegion.isEmpty()){
+                        subRegions.add(eachSubRegion);
+                    }
+                }
+            }
+        }
+        return subRegions;
     }
 }
