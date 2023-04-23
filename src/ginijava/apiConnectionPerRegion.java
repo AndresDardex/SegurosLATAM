@@ -12,7 +12,7 @@ import java.util.List;
 
 public class apiConnectionPerRegion {
         private static final String SUBREGIONS = "https://restcountries.com/v3.1/subregion/";
-        //    South%20America
+        //    [Caribbean, Eastern Africa, South America, Southern Africa, Western Africa, Melanesia, Polynesia, Western Europe, Southern Europe]
     
     public String GetCountries(String SubRegion) throws IOException {
         URL url = new URL(SUBREGIONS + SubRegion );

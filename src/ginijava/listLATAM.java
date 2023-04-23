@@ -36,7 +36,7 @@ public class listLATAM {
         public List<String> LATAM(JsonNode jsonCountries){
             List<String> latinAmericanCountries = new ArrayList<>();
             for (int indice = 0; indice<56;indice++)
-            if (jsonCountries.get(indice).get("languages").get("spa") != null || jsonCountries.get(indice).get("languages").get("por") != null || jsonCountries.get(indice).get("languages").get("fra") != null && jsonCountries.get(indice).get("subregion").asText().equals("Caribbean") ) {
+            if (jsonCountries.get(indice).get("languages").get("spa") != null || jsonCountries.get(indice).get("languages").get("por") != null || jsonCountries.get(indice).get("languages").get("fra") != null && jsonCountries.get(indice).get("subregion").asText().equals("Caribbean")) {
                 latinAmericanCountries.add(jsonCountries.get(indice).get("name").get("common").asText());
             }
             
