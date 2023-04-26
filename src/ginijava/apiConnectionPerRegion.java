@@ -11,8 +11,7 @@ import java.util.List;
 
 
 public class apiConnectionPerRegion {
-        private static final String SUBREGIONS = "https://restcountries.com/v3.1/subregion/";
-        //    [Caribbean, Eastern Africa, South America, Southern Africa, Western Africa, Melanesia, Polynesia, Western Europe, Southern Europe]
+        private static final String SUBREGIONS = "https://restcountries.com/v3.1/region/";
     
     public String GetCountries(String SubRegion) throws IOException {
         URL url = new URL(SUBREGIONS + SubRegion );
@@ -36,7 +35,7 @@ public class apiConnectionPerRegion {
         return response.toString();
     }
     public List<String> GetCountriesList(JsonNode jsonCountries){
-        List<String> CountriesSURAME = new ArrayList<>();
+        List<String> Country = new ArrayList<>();
         if (jsonCountries != null) {
     for (int quantity = 0; quantity < 195; quantity++) {
         JsonNode countryNode = jsonCountries.get(quantity);
@@ -46,12 +45,12 @@ public class apiConnectionPerRegion {
                 JsonNode commonNode = nameNode.get("common");
                 if (commonNode != null) {
                     String country = commonNode.asText();
-                    CountriesSURAME.add(country);
+                    Country.add(country);
                 }
             }
         }
     }
 }
-        return CountriesSURAME;
+        return Country;
     }
 }

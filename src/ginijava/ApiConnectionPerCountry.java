@@ -11,7 +11,8 @@ public class apiConnectionPerCountry {
     private static final String BASE_URL = "https://restcountries.com/v3.1/name/";
     
     public String GetCountry(String country) throws IOException {
-        URL url = new URL(BASE_URL + country);
+        String error = country.replace(" ", "%20");
+        URL url = new URL(BASE_URL + error);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
         connection.setRequestMethod("GET");
         
