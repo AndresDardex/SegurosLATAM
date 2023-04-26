@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,10 +15,10 @@ import java.util.Map;
 
 
 public class listCountries {
-    private static final String COUNTRIES_SURAME = "https://restcountries.com/v3.1/all";
+    private static final String ALL_COUNTRIES = "https://restcountries.com/v3.1/all";
     
     public String GetCountries() throws IOException {
-        URL url = new URL(COUNTRIES_SURAME);
+        URL url = new URL(ALL_COUNTRIES);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection(); 
         connection.setRequestMethod("GET");
         
@@ -37,8 +38,8 @@ public class listCountries {
 
         return response.toString();
     }
-    public List<String> GetCountriesList(JsonNode jsonCountries){
-        List<String> CountriesSURAME = new ArrayList<>();
+    public  List<List<String>> GetCountriesList(JsonNode jsonCountries){
+         List<List<String>> allCountries = new ArrayList<>();
         if (jsonCountries != null) {
             for (int quantity = 0; quantity < 195; quantity++) {
                 JsonNode countryNode = jsonCountries.get(quantity);
@@ -48,28 +49,67 @@ public class listCountries {
                         JsonNode commonNode = nameNode.get("common");
                         if (commonNode != null) {
                             String country = commonNode.asText();
-                            CountriesSURAME.add(country);
+                            JsonNode capitalNode = countryNode.get("capital");
+                            if (capitalNode != null) {
+                                String capital = capitalNode.get(0).asText();
+                                String population = countryNode.get("population").asText();
+                                int currentYear = LocalDate.now().getYear();
+                                boolean encontrado = false;
+                                for (int year = currentYear; year > 1992; year--) {
+                                    String strNumber = String.valueOf(year);
+                                    JsonNode giniNode = countryNode.get("gini");
+                                    if (giniNode != null && giniNode.has(strNumber)) {
+                                        String gini = giniNode.get(strNumber).asText();
+                                        List<String> countryInfo = new ArrayList<>();
+                                        countryInfo.add(country);
+                                        countryInfo.add(capital);
+                                        countryInfo.add(population);
+                                        countryInfo.add(gini);
+                                        allCountries.add(countryInfo);
+                                        encontrado = true;
+                                    }
+                                }
+                                if (encontrado == false) {
+                                    List<String> countryInfo = new ArrayList<>();
+                                    countryInfo.add(country);
+                                    countryInfo.add(capital);
+                                    countryInfo.add(population);
+                                    countryInfo.add("N/A");
+                                    allCountries.add( countryInfo);
+                        }
+                    }
+                            if(capitalNode == null){
+                              String population = countryNode.get("population").asText();
+                                int currentYear = LocalDate.now().getYear();
+                                boolean encontrado = false;
+                                for (int year = currentYear; year > 1992; year--) {
+                                    String strNumber = String.valueOf(year);
+                                    JsonNode giniNode = countryNode.get("gini");
+                                    if (giniNode != null && giniNode.has(strNumber)) {
+                                        String gini = giniNode.get(strNumber).asText();
+                                        List<String> countryInfo = new ArrayList<>();
+                                        countryInfo.add(country);
+                                        countryInfo.add("N/A");
+                                        countryInfo.add(population);
+                                        countryInfo.add(gini);
+                                        allCountries.add(countryInfo);
+                                        encontrado = true;
+                                    }
+                                }
+                                if (encontrado == false) {
+                                    List<String> countryInfo = new ArrayList<>();
+                                    countryInfo.add(country);
+                                    countryInfo.add("N/A");
+                                    countryInfo.add(population);
+                                    countryInfo.add("N/A");
+                                    allCountries.add( countryInfo);
+                        }  
+                    }
                 }
             }
         }
     }
 }
-        return CountriesSURAME;
-    }
-    public List<String> GetSubRegions(JsonNode jsonCountries){
-        List<String> subRegions = new ArrayList<>();
-        if(jsonCountries != null){
-            for(int quantity = 0; quantity < 9;quantity++){
-                JsonNode SubRegionNode = jsonCountries.get(quantity);
-                if (SubRegionNode != null){
-                    JsonNode subRegion = SubRegionNode.get("subregion");
-                    String eachSubRegion = subRegion.asText();
-                    if(!eachSubRegion.isEmpty()){
-                        subRegions.add(eachSubRegion);
-                    }
-                }
-            }
-        }
-        return subRegions;
+        return allCountries;
     }
 }

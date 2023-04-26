@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class GiniJava {
@@ -29,7 +32,7 @@ public class GiniJava {
                      "Opcions Selector",
                      JOptionPane.QUESTION_MESSAGE,
                      null,
-                     new Object[] {"Pais Individual", "Lista de TODOS los paises y sus regiones", "Lista paises LATAM","Lista de paises por region","Lista de paises por Sub region"},
+                     new Object[] {"Pais Individual", "Lista de TODOS los paises", "Lista paises LATAM","Lista de paises por region","Lista de paises por Sub region"},
                      null
              );
             switch (seleccion.toString()){
@@ -45,38 +48,23 @@ public class GiniJava {
                     );
                     String country = apiConnection.GetCountry(countryName.toString());
                     JsonNode jsonCountry = objectMapper.readTree(country);
-                    System.out.println(jsonCountry);
-                    String common = jsonCountry.get(0).get("name").get("common").asText();
-                    String capital = jsonCountry.get(0).get("capital").get(0).asText();
-                    String population = jsonCountry.get(0).get("population").asText();
-                    JsonNode subRegion = jsonCountry.get(0).get("subregion");
-                    int currentYear = LocalDate.now().getYear();
-                    List<Map<String, String>> yearGiniList = objGini.yearGiniList(currentYear, jsonCountry);
-                    String mensaje = null;
-                    if (!yearGiniList.isEmpty()) {
-                        String year = yearGiniList.get(0).get("year");
-                        String gini = yearGiniList.get(0).get("gini");
-                        mensaje = "Pais: " + common + "\nCapital: " + capital + "\nPoblacion: " + population + "\npara el año: " + year + ", el Gini es de: " + gini + "\nContinente: " + subRegion;
-                    }
-                    JOptionPane.showMessageDialog(null, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE); 
+                    List<List<String>> connection = apiConnection.listCountry(jsonCountry);
                     break;
 
-                case "Lista de TODOS los paises y sus regiones":
+                case "Lista de TODOS los paises":
                     //lista todos los paises y sus regiones (dispuesto a cambios)
                     String countries = listCountries.GetCountries();
                     JsonNode jsonCountries = objectMapper.readTree(countries);
-                    List<String> Countries = listCountries.GetCountriesList(jsonCountries);
+                     List<List<String>> Countries = listCountries.GetCountriesList(jsonCountries);
                     System.out.println(Countries);
-                    List<String> subRegions = listCountries.GetSubRegions(jsonCountries);
-                    System.out.println(subRegions);
+                    System.out.println(Countries.size());
                     break;
                 case "Lista paises LATAM":
                     //lista paises latam
                     String countriesLATAM = listLATAM.GetCountriesLATAM();
                     JsonNode jsonCountriesLATAMSur = objectMapper.readTree(countriesLATAM);
-                    List<String> latinAmericanCountries = listLATAM.LATAM(jsonCountriesLATAMSur);
+                    List<List<String>> latinAmericanCountries = listLATAM.LATAM(jsonCountriesLATAMSur);
                     System.out.println(latinAmericanCountries);
-                    System.out.println(latinAmericanCountries.size());
                     break;
                 case "Lista de paises por region":
                     Object regionSelection = JOptionPane.showInputDialog(
@@ -100,49 +88,62 @@ public class GiniJava {
                      "Opcions Selector",
                      JOptionPane.QUESTION_MESSAGE,
                      null,
-                     new Object[] {"Caribbean", "Eastern Africa", "South America", "Southern Africa", "Western Africa", "Melanesia", "Polynesia", "Western Europe", "Southern Europe"},
+                     new Object[] {"Caribbean","North%20America", "Eastern Africa", "South America", "Southern Africa", "Western Africa", "Melanesia", "Polynesia", "Western Europe", "Southern Europe"},
                      null
                     );
                     if(SubRegionSelection.toString() == "South America"){
                         String countriesSub = perRegion.GetCountries("South%20America");
                         JsonNode jsonSubCountries = objectMapper.readTree(countriesSub);
-                        Map<String, List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
+                        List<List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
                         System.out.println(subregionCountries);
+                        break;
+                    }
+                    if(SubRegionSelection.toString() == "North America"){
+                        String countriesSub = perRegion.GetCountries("North%20America");
+                        JsonNode jsonSubCountries = objectMapper.readTree(countriesSub);
+                        List<List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
+                        System.out.println(subregionCountries);
+                        break;
                     }
                     if(SubRegionSelection.toString() == "Eastern Africa"){
                         String countriesSub = perRegion.GetCountries("Eastern%20Africa");
                         JsonNode jsonSubCountries = objectMapper.readTree(countriesSub);
-                        Map<String, List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
+                        List<List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
                         System.out.println(subregionCountries);
+                        break;
                     }
                     if(SubRegionSelection.toString() == "Southern Africa"){
                         String countriesSub = perRegion.GetCountries("Southern%20Africa");
                         JsonNode jsonSubCountries = objectMapper.readTree(countriesSub);
-                        Map<String, List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
+                        List<List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
                         System.out.println(subregionCountries);
+                        break;
                     }
                     if(SubRegionSelection.toString() == "Western Africa"){
                         String countriesSub = perRegion.GetCountries("Western%20Africa");
                         JsonNode jsonSubCountries = objectMapper.readTree(countriesSub);
-                        Map<String, List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
+                        List<List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
                         System.out.println(subregionCountries);
+                        break;
                     }
                     if(SubRegionSelection.toString() == "Western Europe"){
                         String countriesSub = perRegion.GetCountries("Western%20Europe");
                         JsonNode jsonSubCountries = objectMapper.readTree(countriesSub);
-                        Map<String, List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
+                        List<List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
                         System.out.println(subregionCountries);
+                        break;
                     }
                     if(SubRegionSelection.toString() == "Southern Europe"){
                         String countriesSub = perRegion.GetCountries("Southern%20Europe");
                         JsonNode jsonSubCountries = objectMapper.readTree(countriesSub);
-                        Map<String, List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
+                        List<List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
                         System.out.println(subregionCountries);
+                        break;
                     }
                     else{
                         String countriesSub = perRegion.GetCountries(SubRegionSelection.toString());
                         JsonNode jsonSubCountries = objectMapper.readTree(countriesSub);
-                        Map<String, List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
+                        List<List<String>> subregionCountries = perRegion.GetCountriesList(jsonSubCountries);
                         System.out.println(subregionCountries);
                     }
                     
